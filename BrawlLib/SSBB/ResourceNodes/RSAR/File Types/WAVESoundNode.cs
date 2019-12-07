@@ -59,8 +59,10 @@ namespace BrawlLib.SSBB.ResourceNodes
             {
                 dlg.Type = 1;
                 dlg.AudioSource = fileName;
-                if (dlg.ShowDialog(null) == DialogResult.OK)
-                    ReplaceRaw(dlg.AudioData);
+                dlg.ConvertWithoutDialog();
+                ReplaceRaw(dlg.AudioData);
+                //if (dlg.ShowDialog(null) == DialogResult.OK)
+                //    ReplaceRaw(dlg.AudioData);
             }
             else
                 base.Replace(fileName);

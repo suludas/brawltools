@@ -655,6 +655,17 @@ namespace System.Windows.Forms
             MaximumSize = new Drawing.Size(int.MaxValue, 216);
         }
 
+        new public void ConvertWithoutDialog()
+        {
+            LoadAudio(AudioSource);
+
+            _audioData = RSARWaveConverter.Encode(_sourceStream, null);
+            //using (ProgressWindow progress = new ProgressWindow(this, String.Format("{0} Converter", _type == 0 ? "Brstm" : "Wave"), "Encoding, please wait...", false))
+            //{
+            //    _audioData = RSARWaveConverter.Encode(_sourceStream, progress);
+            //}
+        }
+
         new public DialogResult ShowDialog(IWin32Window owner)
         {
             _audioData = null;

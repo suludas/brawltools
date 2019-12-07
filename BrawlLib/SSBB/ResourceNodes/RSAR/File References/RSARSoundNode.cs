@@ -2,11 +2,57 @@
 using BrawlLib.SSBBTypes;
 using System.ComponentModel;
 using System.Audio;
+using System.Diagnostics;
+using System.IO;
 
 namespace BrawlLib.SSBB.ResourceNodes
 {
     public unsafe class RSARSoundNode : RSAREntryNode, IAudioSource
     {
+        
+        public override void OnMergeInFile()
+        {
+            if (SoundDataNode == "<null>") return;
+            RSARSoundNode n = this as RSARSoundNode;
+            if (n._waveDataNode == null) Debug.WriteLine("a node was null");
+            {
+                if (n._waveDataNode._refs.Count > 1) Debug.WriteLine("a node had multiple refs");
+                string prefix = "exported-jp/";
+                string path = TreePath;  // Soundfile could probably be used instead as an alterante file heirarchy
+
+                if (path.StartsWith("fr") ||
+                    path.StartsWith("de") ||
+                    path.StartsWith("es") ||
+                    path.StartsWith("it"))
+                    return;
+                if (path.StartsWith("pk"))
+                {
+                    // announcer goes 4? 5! When announcing doubles starting mons occasionally
+                    if(path.EndsWith("4")) path = path.Substring(0, path.Length - 1) + "2";
+                    if(path.EndsWith("5")) path = path.Substring(0, path.Length - 1) + "1";
+                }
+
+                string inPath = prefix + path + ".wav";
+
+                if (!File.Exists(inPath)) {
+                    Debug.WriteLine($"Couldn't find file at `{inPath}`");
+                } else {
+                    n._waveDataNode.Sound.Replace(inPath);
+                }
+            }
+
+        }
+
+        public override void OnExportFile()
+        {
+            if (SoundDataNode == "<null>") return;
+            RSARSoundNode n = this as RSARSoundNode;
+            if (n._waveDataNode == null) Debug.WriteLine("a node was null");
+
+            string outPath = "exported/" + TreePath + ".wav";
+            new FileInfo(outPath).Directory.Create();
+            Export(outPath);
+        }
         internal INFOSoundEntry* Header { get { return (INFOSoundEntry*)WorkingUncompressed.Address; } }
         
         public RSARSoundNode()

@@ -105,9 +105,9 @@ namespace BrawlLib.SSBB.ResourceNodes
         public virtual bool HasChildren { get { return (_children == null) || (_children.Count != 0); } }
         [Browsable(false)]
         public virtual ResourceType ResourceType { get { return ResourceType.Unknown; } }
-        [Browsable(false)]
+        [Browsable(true)]
         public virtual string TreePathAbsolute { get { return _parent == null ? Name : _parent.TreePathAbsolute + "/" + Name; } }
-        [Browsable(false)]
+        [Browsable(true)]
         public virtual string TreePath
         {
             get
@@ -811,6 +811,45 @@ namespace BrawlLib.SSBB.ResourceNodes
             MergeInternal();
             _merged = true;
         }
+
+        public void MergeInFiles()
+        {
+
+            foreach (ResourceNode node in Children)
+            {
+                if (!node.HasChildren)
+                {
+                    node.OnMergeInFile();
+
+                } else
+                {
+                    node.MergeInFiles();
+                }
+            }
+
+        }
+        public virtual void OnMergeInFile() { }
+
+        public void ExportAllFiles()
+        {
+
+            foreach (ResourceNode node in Children)
+            {
+                if (!node.HasChildren)
+                {
+                    node.OnExportFile();
+
+                }
+                else
+                {
+                    node.ExportAllFiles();
+                }
+            }
+
+        }
+        public virtual void OnExportFile() { }
+
+
 
         //Swap data sources to only use new temp file. Closes original sources.
         protected virtual void MergeInternal()

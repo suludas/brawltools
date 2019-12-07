@@ -278,6 +278,7 @@ namespace BrawlLib.SSBB.ResourceNodes
         internal static ResourceNode TryParse(DataSource source) { return ((RSARHeader*)source.Address)->_header._tag == RSARHeader.Tag ? new RSARNode() : null; }
     }
 
+
     public enum PanMode
     {
         Dual,      // Perform position processing for stereo as two monaural channels.

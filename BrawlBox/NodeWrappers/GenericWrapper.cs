@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using System.IO;
 using System.ComponentModel;
+using BrawlLib.SSBB.ResourceNodes;
 
 namespace BrawlBox.NodeWrappers
 {
@@ -23,19 +24,23 @@ namespace BrawlBox.NodeWrappers
             _menu.Items.Add(new ToolStripMenuItem("Re&name", null, RenameAction, Keys.Control | Keys.N));
             _menu.Items.Add(new ToolStripSeparator());
             _menu.Items.Add(new ToolStripMenuItem("&Delete", null, DeleteAction, Keys.Control | Keys.Delete));
+            _menu.Items.Add(new ToolStripMenuItem("&MergeInFiles", null, MergeInFilesAction));
+            _menu.Items.Add(new ToolStripMenuItem("&ExportAllFiles", null, ExportAllFilesAction));
             _menu.Opening += MenuOpening;
             _menu.Closing += MenuClosing;
         }
         protected static void MoveUpAction(object sender, EventArgs e) { GetInstance<GenericWrapper>().MoveUp(); }
         protected static void MoveDownAction(object sender, EventArgs e) { GetInstance<GenericWrapper>().MoveDown(); }
         protected static void ExportAction(object sender, EventArgs e) { GetInstance<GenericWrapper>().Export(); }
+        protected static void MergeInFilesAction(object sender, EventArgs e) { GetInstance<GenericWrapper>().MergeInFiles(); }
+        protected static void ExportAllFilesAction(object sender, EventArgs e) { GetInstance<GenericWrapper>().ExportAllFiles(); }
         protected static void ReplaceAction(object sender, EventArgs e) { GetInstance<GenericWrapper>().Replace(); }
         protected static void RestoreAction(object sender, EventArgs e) { GetInstance<GenericWrapper>().Restore(); }
         protected static void DeleteAction(object sender, EventArgs e) { GetInstance<GenericWrapper>().Delete(); }
         protected static void RenameAction(object sender, EventArgs e) { GetInstance<GenericWrapper>().Rename(); }
         private static void MenuClosing(object sender, ToolStripDropDownClosingEventArgs e)
         {
-            _menu.Items[1].Enabled = _menu.Items[2].Enabled = _menu.Items[4].Enabled = _menu.Items[5].Enabled = _menu.Items[8].Enabled = true;
+            _menu.Items[1].Enabled = _menu.Items[2].Enabled = _menu.Items[4].Enabled = _menu.Items[5].Enabled = _menu.Items[8].Enabled = _menu.Items[9].Enabled = true;
         }
         private static void MenuOpening(object sender, CancelEventArgs e)
         {
@@ -48,7 +53,7 @@ namespace BrawlBox.NodeWrappers
 
         #endregion
 
-        public GenericWrapper(IWin32Window owner) { _owner = owner;  ContextMenuStrip = _menu; }
+        public GenericWrapper(IWin32Window owner) { _owner = owner; ContextMenuStrip = _menu; }
         public GenericWrapper() { _owner = null; ContextMenuStrip = _menu; }
 
         public void MoveUp() { MoveUp(true); }
@@ -120,6 +125,17 @@ namespace BrawlBox.NodeWrappers
             return outPath;
         }
         public virtual void OnExport(string outPath, int filterIndex) { _resource.Export(outPath); }
+
+
+        public virtual void MergeInFiles()
+        {
+            _resource.MergeInFiles();
+        }
+        public virtual void ExportAllFiles()
+        {
+            _resource.ExportAllFiles();
+        }
+
 
         public virtual void Replace()
         {
